@@ -3,3 +3,4 @@ __pycache__/
 *.py[cod]
 .venv/
 班表codex/public/
+班表codex/local_exports/
