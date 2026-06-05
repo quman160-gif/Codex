@@ -94,6 +94,11 @@ def write_csv(path: Path, events: list[ShiftEvent], include_person: bool = False
             writer.writerow(csv_row(event, include_person))
 
 
+def write_text_file(path: Path, content: str) -> None:
+    with path.open("w", encoding="utf-8", newline="") as output:
+        output.write(content)
+
+
 def with_person_in_summary(events: list[ShiftEvent]) -> list[ShiftEvent]:
     return [replace(event, summary=f"{event.person}｜{event.summary}") for event in events]
 
@@ -120,7 +125,7 @@ def export_for_workbook(workbook: Path) -> dict[str, Any]:
         base = f"{safe_filename(person)}-{label}"
         ics_path = ICS_DIR / f"{base}.ics"
         csv_path = CSV_DIR / f"{base}.csv"
-        ics_path.write_text(render_calendar(person, person_events, generated_at), encoding="utf-8", newline="")
+        write_text_file(ics_path, render_calendar(person, person_events, generated_at))
         write_csv(csv_path, person_events)
         people.append(
             {
@@ -133,11 +138,7 @@ def export_for_workbook(workbook: Path) -> dict[str, Any]:
 
     all_ics = ICS_DIR / f"全部人-{label}.ics"
     all_csv = CSV_DIR / f"全部人-{label}.csv"
-    all_ics.write_text(
-        render_calendar("全部人", with_person_in_summary(events), generated_at),
-        encoding="utf-8",
-        newline="",
-    )
+    write_text_file(all_ics, render_calendar("全部人", with_person_in_summary(events), generated_at))
     write_csv(all_csv, events, include_person=True)
 
     manifest = {

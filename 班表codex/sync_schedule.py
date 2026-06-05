@@ -262,6 +262,11 @@ def fold_ical_line(line: str) -> str:
     return "\r\n".join(output)
 
 
+def write_text_file(path: Path, content: str) -> None:
+    with path.open("w", encoding="utf-8", newline="") as output:
+        output.write(content)
+
+
 def format_datetime(value: datetime) -> str:
     return value.strftime("%Y%m%dT%H%M%S")
 
@@ -440,7 +445,7 @@ def write_outputs(
         slug = slugify_person(person, used_slugs)
         filename = f"{slug}.ics"
         calendar_text = render_calendar(person, person_events, generated_at)
-        (ics_dir / filename).write_text(calendar_text, encoding="utf-8", newline="")
+        write_text_file(ics_dir / filename, calendar_text)
         path = f"ics/{filename}"
         entries.append(
             {
