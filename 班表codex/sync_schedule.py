@@ -152,7 +152,7 @@ def numeric_shift_parts(code: str) -> list[ShiftPart] | None:
         return None
     start_text, end_text = match.groups()
     label = f"{format_hour(start_text)}-{format_hour(end_text)}"
-    return [ShiftPart(f"自訂班 {label}", parse_hour(start_text), parse_hour(end_text))]
+    return [ShiftPart(label, parse_hour(start_text), parse_hour(end_text))]
 
 
 def resolve_shift(code: str) -> list[ShiftPart] | None:
