@@ -9,7 +9,7 @@ import os
 import re
 import sys
 import unicodedata
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from datetime import date, datetime, time, timedelta, timezone
 from pathlib import Path
 from typing import Any
@@ -20,6 +20,8 @@ import openpyxl
 TIMEZONE_ID = "Asia/Taipei"
 STORE_NAME = "吉康藥局"
 REST_COLOR = "#D50000"
+ALL_PEOPLE_NAME = "全部人"
+ALL_PEOPLE_FILENAME = "all.ics"
 PERSON_SLUGS = {
     "宏志": "hongzhi",
     "佳惠": "jiahui",
@@ -348,6 +350,13 @@ def render_calendar(person: str, events: list[ShiftEvent], generated_at: datetim
     return "\r\n".join(lines) + "\r\n"
 
 
+def with_person_in_summary(events: list[ShiftEvent]) -> list[ShiftEvent]:
+    return [
+        replace(event, summary=f"{event.person}｜{event.summary}", part_index=event.part_index + 1000)
+        for event in events
+    ]
+
+
 def slugify_person(name: str, used: set[str]) -> str:
     base = PERSON_SLUGS.get(name)
     if base is None:
@@ -455,6 +464,23 @@ def write_outputs(
                 "path": path,
                 "url": f"{base_url.rstrip('/')}/{path}" if base_url else "",
             }
+        )
+
+    if events:
+        all_people_path = f"ics/{ALL_PEOPLE_FILENAME}"
+        write_text_file(
+            ics_dir / ALL_PEOPLE_FILENAME,
+            render_calendar(ALL_PEOPLE_NAME, with_person_in_summary(events), generated_at),
+        )
+        entries.insert(
+            0,
+            {
+                "person": ALL_PEOPLE_NAME,
+                "events": len(events),
+                "file": ALL_PEOPLE_FILENAME,
+                "path": all_people_path,
+                "url": f"{base_url.rstrip('/')}/{all_people_path}" if base_url else "",
+            },
         )
 
     output_dir.mkdir(parents=True, exist_ok=True)
