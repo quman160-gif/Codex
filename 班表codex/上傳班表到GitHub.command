@@ -3,7 +3,7 @@
 set -u
 
 REPO_DIR="/Users/seroma/Desktop/簡宏志/codex"
-EXCEL_FILE="班表codex/班表AI-11506-1拷貝.xlsx"
+EXCEL_FILE="班表codex/班表連續月份.xlsx"
 ICS_HOME="https://quman160-gif.github.io/Codex/"
 
 print_subscription_urls() {
@@ -48,7 +48,7 @@ echo "1/4 同步 GitHub 最新版本..."
 git pull --rebase --autostash origin main || fail "git pull 失敗，請把上面的錯誤訊息截圖給 Codex。"
 
 echo
-echo "2/4 只加入指定 Excel 檔案..."
+echo "2/4 只加入指定 Excel 檔案：$EXCEL_FILE"
 git add -- "$EXCEL_FILE" || fail "git add 失敗。"
 
 if git diff --cached --quiet -- "$EXCEL_FILE"; then

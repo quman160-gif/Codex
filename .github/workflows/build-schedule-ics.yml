@@ -32,7 +32,7 @@ jobs:
         run: python -m pip install -r "班表codex/requirements.txt"
 
       - name: Build ICS files
-        run: python "班表codex/sync_schedule.py" --base-url "https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}"
+        run: python "班表codex/sync_schedule.py" --base-url "https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}" "班表codex/班表連續月份.xlsx"
 
       - uses: actions/upload-pages-artifact@v3
         with:

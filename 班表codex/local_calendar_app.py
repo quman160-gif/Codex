@@ -25,6 +25,7 @@ from sync_schedule import (
 
 
 APP_DIR = Path(__file__).resolve().parent
+LOCAL_WORKBOOK_NAME = "班表單月.xlsx"
 EXPORT_DIR = APP_DIR / "local_exports"
 ICS_DIR = EXPORT_DIR / "ics"
 CSV_DIR = EXPORT_DIR / "csv"
@@ -43,9 +44,8 @@ FIELDNAMES = [
 
 
 def find_workbooks() -> list[Path]:
-    return sorted(
-        path for path in APP_DIR.glob("*.xlsx") if path.is_file() and not path.name.startswith("~$")
-    )
+    workbook = APP_DIR / LOCAL_WORKBOOK_NAME
+    return [workbook] if workbook.is_file() else []
 
 
 def safe_filename(value: str) -> str:
